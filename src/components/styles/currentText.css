@@ -1,0 +1,14 @@
+
+.current {
+    background-color: grey;
+    color: white;
+}
+.main_text {
+    color: blue
+}
+.correct {
+    color: green;
+}
+.uncorrect{
+    color: red;
+}
