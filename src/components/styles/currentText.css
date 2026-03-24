@@ -1,14 +1,11 @@
-
-.current {
-    background-color: grey;
-    color: white;
-}
 .main_text {
-    color: blue
+    color: #9395C5;
+    word-spacing: 1rem;
 }
+
 .correct {
-    color: green;
+    color: #77dd77;
 }
 .uncorrect{
-    color: red;
+    color: #f80000;
 }

@@ -18,3 +18,46 @@ export const setText = atom(null, (_, set, different: 'easy' | 'medium' | 'hard'
     set(text, data[different][Math.floor(Math.random() * data[different].length)]);
 });
 
+const symbol = atom(0)
+
+export const setSymbol = atom(null, (get, set) => {
+    set(symbol, get(symbol) + 1)
+})
+
+export const act = atom(false)
+
+export const setAct = atom(null, (get, set) => {
+    set(act, !get(act))
+})
+
+export const sec = atom(0)
+
+export const secInc = atom(null, (get, set) => {
+    set(sec, get(sec) + 1)
+})
+
+export const clearSec = atom(null, (_, set) =>{
+    set(sec, 0)
+})
+
+export const WPM = atom(0)
+
+export const setMPW = atom(null, (get, set) => {
+    set(WPM, Math.floor(get(symbol) / 5 / (get(sec) /60)))
+})
+
+export const accuracy = atom(0)
+
+const corr = atom(0)
+//
+export const setCorr = atom(null, (get, set) => {
+    set(corr, get(corr) + 1)
+})
+//
+export const clearCorr = atom(null, (_, set) =>{
+    set(corr, 0)
+})
+//
+export const setAccuracy = atom(null, (get, set) => {
+    set(accuracy, (get(corr) * 100 / get(symbol)))
+})
