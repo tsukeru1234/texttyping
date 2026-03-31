@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import './styles/currentText.css'
 import { chekChard } from './util'
-import { setSymbol, act, setAct, secInc, clearSec, setMPW, setCorr, clearCorr, setAccuracy } from './stores/storeText'
-import { useAtomValue, useSetAtom } from "jotai";
+import { symbol, act, setMPW, setAccuracy, startTimeAtom, durationAtom, corr, clearPar } from './stores/storeText'
+import { useAtom, useSetAtom } from "jotai";
 import './styles/font.css'
 
 type receivedText = {
@@ -14,35 +14,27 @@ const CurrentText = ({ textR }: receivedText) => {
     //кол во слов в минуту
     const setwpm = useSetAtom(setMPW);
 
-    const setSym = useSetAtom(setSymbol)
+    const [, setSym] = useAtom(symbol)
 
-    const setSec = useSetAtom(secInc); 
-    const cSec = useSetAtom(clearSec); //обнуление секундомера
+     //обнуление секундомера
 
-    const active = useAtomValue(act); // включение секундомера
-    const setActive = useSetAtom(setAct);
+    const [active, setActive] = useAtom(act); // включение секундомера
 
-    const setCo = useSetAtom(setCorr);
     const setAcc = useSetAtom(setAccuracy);
-    const cCo = useSetAtom(clearCorr);
+    
+    const [, setCorrect] = useAtom(corr)
 
-    const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [startTime] = useAtom(startTimeAtom);
+    const setDuration = useSetAtom(durationAtom);
+
+    const clearParam = useSetAtom(clearPar)
 
     useEffect(() => {
         if(active){
-            intervalRef.current = setInterval(() => {
-                setSec();
-            }, 1000);
-        } else if (intervalRef.current){
-            clearInterval(intervalRef.current);
-            cSec();
-            cCo();
-        };
-
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        }
-    }, [active, setSec, cSec, cCo]);
+            return () => {
+                clearParam()
+            }};
+    },[active, clearParam])
 
     const inputRef = useRef<HTMLDivElement>(null);
     const text: string = textR;
@@ -63,17 +55,22 @@ const CurrentText = ({ textR }: receivedText) => {
             const expCharEl: Element | undefined = inputRef.current?.children[currentIndex]; //текущий DOMэлемент нужен для добавления ему стиля 
             if (event.key === expChar){
                 chekChard(expCharEl, 'correct');//функция в util.ts
-                setSym()
-                setCo()
+                setSym(prev => prev + 1)
+                setCorrect(prev => prev + 1)
             } else {
                 chekChard(expCharEl, 'uncorrect');
-                setSym()
+                setSym(prev => prev + 1)
             };
             setCurrentIndex(prev => prev + 1);
             if (currentIndex === text.length - 1) {
+                if(startTime > 0){
+                    const endTime = performance.now();
+                    const diff = endTime - startTime;
+                    setDuration(Math.floor(diff/1000))
+                }
+                setActive(prev => !prev)
                 setwpm() 
                 setAcc();//выводит при полном заполнении текста
-                setActive()//отключает таймер
             };
         };
         window.addEventListener('keydown', handleKeyDown);

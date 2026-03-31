@@ -1,17 +1,10 @@
+import { createRouter, RouterProvider } from "@tanstack/react-router"
+import { routeTree } from "./routeTree.gen"
 
-import Received from "./components/Received"
-import Header from "./components/Header"
+const router = createRouter({ routeTree })
 
-
-const App = () => {
-  return (
-    <div 
-    className="min-w-screen min-h-screen pl-50 pr-50 pt-10"
-    style={{backgroundColor: '#040628'}}>
-      <Header />
-      <Received/>
-    </div>
-  )
+function App() {
+  return <RouterProvider router={router} />;
 }
 
 export default App

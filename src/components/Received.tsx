@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { text, setText, setAct, WPM, accuracy, act } from './stores/storeText'
-import { useAtomValue, useSetAtom } from "jotai";
+import { text, setText, WPM, accuracy, act, startTimeAtom } from './stores/storeText'
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { Link } from "@tanstack/react-router";
 import CurrentText from "./CurrentText";
 import './styles/font.css'
 
@@ -14,8 +15,9 @@ const Received = () => {
 
     const wpm = useAtomValue(WPM)
 
-    const active = useAtomValue(act);
-    const setActive = useSetAtom(setAct)
+    const setStartTime = useSetAtom(startTimeAtom)
+
+    const [active, setActive] = useAtom(act);
 
     const val: 'easy' | 'medium' | 'hard' = selectvalue as 'easy' | 'medium' | 'hard' //если выдаст ошибку то значить что ощибка в коде, а именно в названиях сложности
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,8 +25,8 @@ const Received = () => {
     }
     const handleStart = () => {
         setTxt(val)//берёт заданную сложность и передаёт её в джотай функцию
-        setActive()
-        
+        setActive(prev => !prev)
+        setStartTime(performance.now())
     }
         return (
             <div className="pr-10 pl-10">
@@ -61,7 +63,14 @@ const Received = () => {
                             checked={selectvalue === 'hard'}
                             onChange={handleChange} 
                             className="hidden"/>Жёск
-                            </label>
+                        </label>
+                        <span style={{color: '#9395C5'}}
+                        className="font-thin text-3xl pb-2.5">|</span>
+                        <Link to='/yourtextpage'
+                            className='no-underline border-2 border-indigo-200 rounded-xl pl-3 pr-3 grid place-items-center segoePrint text-2xl'
+                            style={{color: '#9395C5'}}>
+                            Ввести свой текст
+                        </Link>
                     </div>
                 </div>
                     <hr 
