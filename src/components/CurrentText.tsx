@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './styles/currentText.css'
-import { chekChard } from './util'
-import { symbol, act, setMPW, setAccuracy, startTimeAtom, durationAtom, corr, clearPar } from './stores/storeText'
+
+import { symbol, act, setMPW, setAccuracy, startTimeAtom, durationAtom, corr, clearPar, setCheckAtomChard, setPointsAtom } from './stores/storeText'
 import { useAtom, useSetAtom } from "jotai";
 import './styles/font.css'
 
@@ -16,8 +16,6 @@ const CurrentText = ({ textR }: receivedText) => {
 
     const [, setSym] = useAtom(symbol)
 
-     //обнуление секундомера
-
     const [active, setActive] = useAtom(act); // включение секундомера
 
     const setAcc = useSetAtom(setAccuracy);
@@ -28,6 +26,10 @@ const CurrentText = ({ textR }: receivedText) => {
     const setDuration = useSetAtom(durationAtom);
 
     const clearParam = useSetAtom(clearPar)
+
+    const chekChard = useSetAtom(setCheckAtomChard)
+
+    const setPoint = useSetAtom(setPointsAtom)
 
     useEffect(() => {
         if(active){
@@ -54,7 +56,7 @@ const CurrentText = ({ textR }: receivedText) => {
             const expChar = text[currentIndex]; //нужная буква
             const expCharEl: Element | undefined = inputRef.current?.children[currentIndex]; //текущий DOMэлемент нужен для добавления ему стиля 
             if (event.key === expChar){
-                chekChard(expCharEl, 'correct');//функция в util.ts
+                chekChard(expCharEl, 'correct')
                 setSym(prev => prev + 1)
                 setCorrect(prev => prev + 1)
             } else {
@@ -71,6 +73,7 @@ const CurrentText = ({ textR }: receivedText) => {
                 setActive(prev => !prev)
                 setwpm() 
                 setAcc();//выводит при полном заполнении текста
+                setPoint();
             };
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -80,7 +83,7 @@ const CurrentText = ({ textR }: receivedText) => {
 
     });
     return (
-        <div ref={inputRef} className='text-4xl'>
+        <div ref={inputRef} className='text-2xl lg:text-3xl xl:text-4xl'>
             {splitText}
         </div>
     )

@@ -20,6 +20,7 @@ export const setText = atom(null, (_, set, different: 'easy' | 'medium' | 'hard'
 
 export const symbol = atom(0)
 
+
 export const act = atom(false)
 
 export const startTimeAtom = atom(0)
@@ -43,4 +44,18 @@ export const clearPar = atom(null, (_, set) => {
     set(corr, 0)
     set(symbol, 0)
     set(durationAtom, 0)
+})
+
+
+export const setCheckAtomChard = atom(null,(_, set, el: Element | undefined, class_: string) => {
+        if (!el)return;
+        el.classList.add(class_);
+    })
+
+export const pointsAtom = atom(0)
+
+export const setPointsAtom = atom(null, (get, set) => {
+    if (get(pointsAtom) < (get(WPM) * get(accuracy) / 100)){
+        set(pointsAtom, Math.floor(get(WPM) * get(accuracy) / 100));
+    }
 })

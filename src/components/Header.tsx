@@ -1,18 +1,18 @@
+import { useAtomValue } from 'jotai'
 import './styles/font.css'
+import { pointsAtom } from './stores/storeText'
 
 
 
 const Header = () => {
+  const point = useAtomValue(pointsAtom)
+
   return (
-    <div className="w-full h-20 flex justify-between items-center">
-        <span 
-        className="text-4xl font-bold segoePrint"
-        style={{color: '#9395C5'}}>
+    <div className="w-full h-12 pb-5 mt-6 lg:h-20 lg:pb-0 lg:mt-0 flex justify-between items-center text-2xl lg:text-3xl xl:text-4xl font-bold segoePrint"
+    style={{color: '#9395C5'}}>
+        <span>
             Печаталка</span>
-        <span 
-        className="text-4xl font-bold segoePrint"
-        style={{color: '#9395C5'}}
-        >Лучший результат:</span>
+        <span>Лучший результат: {point}</span>
     </div>
   )}
 
