@@ -1,44 +1,24 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import './styles/currentText.css'
-
-import { symbol, act, setMPW, setAccuracy, startTimeAtom, durationAtom, corr, clearPar, setCheckAtomChard, setPointsAtom } from './stores/storeText'
-import { useAtom, useSetAtom } from "jotai";
 import './styles/font.css'
-
-type receivedText = {
-    textR: string;
-}; //принимает текст
+import { useCurrentText } from './Hooks/useCurrentText';
+import type { receivedText } from './types';
 
 const CurrentText = ({ textR }: receivedText) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    //кол во слов в минуту
-    const setwpm = useSetAtom(setMPW);
-
-    const [, setSym] = useAtom(symbol)
-
-    const [active, setActive] = useAtom(act); // включение секундомера
-
-    const setAcc = useSetAtom(setAccuracy);
-    
-    const [, setCorrect] = useAtom(corr)
-
-    const [startTime] = useAtom(startTimeAtom);
-    const setDuration = useSetAtom(durationAtom);
-
-    const clearParam = useSetAtom(clearPar)
-
-    const chekChard = useSetAtom(setCheckAtomChard)
-
-    const setPoint = useSetAtom(setPointsAtom)
-
-    useEffect(() => {
-        if(active){
-            return () => {
-                clearParam()
-            }};
-    },[active, clearParam])
-
-    const inputRef = useRef<HTMLDivElement>(null);
+    const {
+            currentIndex,
+            setCurrentIndex,
+            setWpm,
+            setSym,
+            setActive,
+            setAcc,
+            setCorrect,
+            startTime,
+            setDuration,
+            checkChard,
+            setPoint,
+            inputRef,
+        } = useCurrentText();
     const text: string = textR;
     const splitText = text.split('').map((char: string, index: number) => {
         return <span
@@ -48,7 +28,7 @@ const CurrentText = ({ textR }: receivedText) => {
         >
             {char}
         </span>
-    });// создаём массив span с каждой буквой
+    });// создаём массв span с каждой буквой
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -56,22 +36,22 @@ const CurrentText = ({ textR }: receivedText) => {
             const expChar = text[currentIndex]; //нужная буква
             const expCharEl: Element | undefined = inputRef.current?.children[currentIndex]; //текущий DOMэлемент нужен для добавления ему стиля 
             if (event.key === expChar){
-                chekChard(expCharEl, 'correct')
-                setSym(prev => prev + 1)
-                setCorrect(prev => prev + 1)
+                checkChard(expCharEl, 'correct');
+                setSym(prev => prev + 1);
+                setCorrect(prev => prev + 1);
             } else {
-                chekChard(expCharEl, 'uncorrect');
-                setSym(prev => prev + 1)
+                checkChard(expCharEl, 'incorrect');
+                setSym(prev => prev + 1);
             };
             setCurrentIndex(prev => prev + 1);
-            if (currentIndex === text.length - 1) {
+            if (currentIndex === text.length - 1){
                 if(startTime > 0){
                     const endTime = performance.now();
                     const diff = endTime - startTime;
-                    setDuration(Math.floor(diff/1000))
-                }
-                setActive(prev => !prev)
-                setwpm() 
+                    setDuration(Math.floor(diff/1000));
+                };
+                setActive(prev => !prev);
+                setWpm();
                 setAcc();//выводит при полном заполнении текста
                 setPoint();
             };
@@ -86,7 +66,7 @@ const CurrentText = ({ textR }: receivedText) => {
         <div ref={inputRef} className='text-2xl lg:text-3xl xl:text-4xl'>
             {splitText}
         </div>
-    )
-}
+    );
+};
 
 export default CurrentText;

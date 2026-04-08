@@ -1,8 +1,6 @@
 import { useAtomValue } from 'jotai'
 import './styles/font.css'
-import { pointsAtom } from './stores/storeText'
-
-
+import { pointsAtom } from '../stores/storeText'
 
 const Header = () => {
   const point = useAtomValue(pointsAtom)
