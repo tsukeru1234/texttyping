@@ -23,18 +23,26 @@ const CurrentText = ({ textR }: receivedText) => {
     const splitText = text.split('').map((char: string, index: number) => {
         return <span
         key={index}
-        className='segoePrint main_text'
-        style={index === currentIndex ? {backgroundColor : '#474a51', color: '#f8f8ff'} : {}}
-        >
+        className='segoePrint main_text'>
             {char}
         </span>
     });// создаём массв span с каждой буквой
 
     useEffect(() => {
+    const firstChar = inputRef.current?.children[0];
+    if (firstChar) {
+        firstChar.classList.add('current');
+    }
+}, []);     
+
+    useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key.length > 1) return; //берём только буквы
+            const expCharEl: Element | undefined = inputRef.current?.children[currentIndex] 
             const expChar = text[currentIndex]; //нужная буква
-            const expCharEl: Element | undefined = inputRef.current?.children[currentIndex]; //текущий DOMэлемент нужен для добавления ему стиля 
+
+            expCharEl?.classList.remove('current')
+
             if (event.key === expChar){
                 checkChard(expCharEl, 'correct');
                 setSym(prev => prev + 1);
@@ -43,7 +51,13 @@ const CurrentText = ({ textR }: receivedText) => {
                 checkChard(expCharEl, 'incorrect');
                 setSym(prev => prev + 1);
             };
-            setCurrentIndex(prev => prev + 1);
+
+            const nextIndex = currentIndex + 1;
+            if (inputRef.current?.children[nextIndex]) {
+                inputRef.current?.children[nextIndex].classList.add('current');
+            }
+            setCurrentIndex(nextIndex);
+
             if (currentIndex === text.length - 1){
                 if(startTime > 0){
                     const endTime = performance.now();
@@ -60,8 +74,7 @@ const CurrentText = ({ textR }: receivedText) => {
          return () => {
             window.removeEventListener('keydown', handleKeyDown);
         }; //вызываем отслеживание нажатий с очисткой
-
-    });
+    }, [currentIndex]);
     return (
         <div ref={inputRef} className='text-2xl lg:text-3xl xl:text-4xl'>
             {splitText}

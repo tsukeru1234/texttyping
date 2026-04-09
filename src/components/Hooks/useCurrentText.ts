@@ -16,6 +16,7 @@ export const useCurrentText = () => {
         const checkChard = useSetAtom(setCheckAtomChard);
         const setPoint = useSetAtom(setPointsAtom);
         const inputRef = useRef<HTMLDivElement>(null);
+
         
         useEffect(() => {
                 if(active){

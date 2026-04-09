@@ -2,6 +2,15 @@
     color: #9395C5;
     word-spacing: 1rem;
 }
+.current {
+    border-left: 2px solid rgb(147, 149, 197);
+    animation: blink 2s infinite
+}
+@keyframes blink {
+    0% {border-color: rgba(147, 149, 197, 1);}
+    50% {border-color: rgba(147, 149, 197, 0);}
+    100% {border-color: rgba(147, 149, 197, 1);}
+}
 
 .correct {
     color: #77dd77;
